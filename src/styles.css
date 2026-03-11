@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+@source ".";
+
+@theme {
+  --color-felt: #0B6623;
+  --color-felt-dark: #064016;
+  --color-felt-light: #0d7a29;
+  --color-gold: #D4AF37;
+  --color-gold-light: #FFDF6B;
+  --color-gold-dark: #A88820;
+  --color-casino-dark: #24272D;
+  --color-casino-deep: #0a0f1a;
+  --color-casino-card: #1c1c1c;
+  --color-casino-surface: #1f2937;
+  --color-casino-border: #374151;
+  --color-card-ink: #1a1a2e;
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #24272D;
+  color: #f9fafb;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Card 3D flip styles */
+.card-container {
+  perspective: 1000px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0.5rem;
+}
+
+.card-back {
+  background: var(--color-casino-card);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(212, 175, 55, 0.06) 0px,
+      rgba(212, 175, 55, 0.06) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.card-front {
+  background: #f8f5e4;
+  color: var(--color-card-ink);
+  transform: rotateY(180deg);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+/* Felt table radial gradient */
+.felt-table {
+  background: radial-gradient(ellipse at center, #0d7a29 0%, #0B6623 50%, #064016 100%);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Gold shimmer button */
+.btn-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #FFDF6B 50%, #D4AF37 100%);
+  background-size: 200% auto;
+  color: #24272D;
+  font-weight: 600;
+  transition: background-position 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-gold:hover:not(:disabled) {
+  background-position: right center;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-gold:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-casino-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
