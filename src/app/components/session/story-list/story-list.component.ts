@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StoryDTO } from '../../../models/session.types';
 import { TranslatePipe } from '../../../pipes/translate.pipe';
@@ -8,13 +8,15 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
   standalone: true,
   imports: [FormsModule, TranslatePipe],
   template: `
-    <div class="flex flex-col h-full bg-casino-card border-r border-casino-surface">
+    <div
+      class="flex flex-col h-full w-full min-w-0 overflow-hidden bg-casino-card border-r border-casino-surface"
+    >
       <!-- Logo -->
       <div class="flex justify-center py-3 border-b border-casino-surface">
         <img
           src="sprint-casino.png"
           alt="Sprint Casino"
-          class="w-[256px] h-[256px] object-contain drop-shadow-xl"
+          class="w-full max-w-[256px] h-auto object-contain drop-shadow-xl"
         />
       </div>
 
@@ -31,7 +33,8 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
           <form (ngSubmit)="addStory()" class="flex gap-2">
             <input
               type="text"
-              [(ngModel)]="newStoryName"
+              [ngModel]="newStoryName()"
+              (ngModelChange)="newStoryName.set($event)"
               name="storyName"
               [placeholder]="'stories.addPlaceholder' | translate"
               maxlength="100"
@@ -70,7 +73,7 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
             <!-- Status indicator -->
             <div class="flex-shrink-0">
               @if (story.status === 'revealed') {
-                <span class="text-green-400 text-xs">✓</span>
+                <span class="text-green-400 text-xs" aria-hidden="true">✓</span>
               } @else if (story.status === 'voting') {
                 <span class="w-2 h-2 rounded-full bg-gold block animate-pulse"></span>
               } @else {
@@ -118,12 +121,12 @@ export class StoryListComponent {
   readonly storyDeleted = output<string>();
   readonly storyAdded = output<string>();
 
-  newStoryName = '';
+  readonly newStoryName = signal('');
 
   addStory(): void {
-    const name = this.newStoryName.trim();
+    const name = this.newStoryName().trim();
     if (!name) return;
     this.storyAdded.emit(name);
-    this.newStoryName = '';
+    this.newStoryName.set('');
   }
 }

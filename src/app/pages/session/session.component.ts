@@ -45,7 +45,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     @if (sessionService.connectionStatus() === 'error') {
       <div class="min-h-screen flex items-center justify-center">
         <div class="text-center max-w-sm mx-auto px-4">
-          <div class="text-5xl mb-4" aria-hidden="true">⚠️</div>
           <h2 class="text-white font-bold text-xl mb-2">
             {{ 'session.connectionFailed' | translate }}
           </h2>
@@ -62,7 +61,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     @if (sessionService.connectionStatus() === 'ended') {
       <div class="min-h-screen flex items-center justify-center">
         <div class="text-center max-w-sm mx-auto px-4">
-          <div class="text-5xl mb-4" aria-hidden="true">🚪</div>
           <h2 class="text-white font-bold text-xl mb-2">
             {{ 'session.sessionEnded' | translate }}
           </h2>
@@ -91,9 +89,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         <!-- Main content -->
         <div class="flex flex-1 min-h-0">
           <!-- Stories sidebar -->
-          <div class="hidden md:flex w-56 lg:w-64 flex-shrink-0">
+          <div
+            class="hidden md:flex w-56 lg:w-64 max-w-56 lg:max-w-64 flex-shrink-0 overflow-hidden min-w-0"
+          >
             <app-story-list
-              class="flex-1"
+              class="flex-1 min-w-0"
               [stories]="session.stories"
               [activeStoryId]="session.activeStoryId"
               [isHost]="sessionService.isHost()"
@@ -120,7 +120,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             </div>
 
             <app-voting-board
-              class="flex-1"
               [activeStory]="sessionService.activeStory()"
               [participants]="session.participants"
               [currentUserId]="userService.userId()"
@@ -130,10 +129,21 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
               (revealVotes)="sessionService.requestReveal()"
               (resetVotes)="onResetVotes()"
             />
+
+            <!-- Card deck -->
+            @if (sessionService.activeStory()?.status === 'voting') {
+              <div class="flex-shrink-0 py-4">
+                <app-card-deck
+                  [options]="session.votingOptions"
+                  [selectedValue]="sessionService.myVote()"
+                  (voteSelected)="sessionService.castVote($event)"
+                />
+              </div>
+            }
           </div>
 
           <!-- Participants sidebar -->
-          <div class="hidden lg:flex w-52 xl:w-60 flex-shrink-0">
+          <div class="hidden lg:flex w-52 xl:w-60 flex-shrink-0 overflow-hidden">
             <app-participants-panel
               class="flex-1"
               [participants]="session.participants"
@@ -142,19 +152,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             />
           </div>
         </div>
-
-        <!-- Card deck (bottom) -->
-        @if (sessionService.activeStory()?.status === 'voting') {
-          <div class="border-t border-casino-surface bg-casino-deep py-4 px-4">
-            <app-card-deck
-              [options]="session.votingOptions"
-              [selectedValue]="sessionService.myVote()"
-              [disabled]="sessionService.activeStory()?.status !== 'voting'"
-              [noActiveStory]="!sessionService.activeStory()"
-              (voteSelected)="sessionService.castVote($event)"
-            />
-          </div>
-        }
 
         <!-- Toast -->
         @if (sessionService.toastMessage()) {

@@ -30,6 +30,7 @@ export class SessionService implements OnDestroy {
   >('idle');
   private readonly _errorMessage = signal<string | null>(null);
   private readonly _toastMessage = signal<string | null>(null);
+  private _pendingVoteAck = false;
 
   readonly session = this._sessionDTO.asReadonly();
   readonly myVote = this._myVote.asReadonly();
@@ -94,7 +95,7 @@ export class SessionService implements OnDestroy {
     if (!this._hostState) return;
     const story: Story = {
       storyId: uuidv4(),
-      name: name.trim(),
+      name: name.trim().slice(0, 100),
       status: 'pending',
       votes: {},
     };
@@ -197,7 +198,7 @@ export class SessionService implements OnDestroy {
       this._hostState = { ...this._hostState, stories };
       this._broadcastState();
     } else {
-      const identity = this.user.identity()!;
+      this._pendingVoteAck = true;
       this.peer.sendToHost({
         type: 'cast_vote',
         payload: { storyId: activeStory.storyId, value },
@@ -321,6 +322,28 @@ export class SessionService implements OnDestroy {
     this._subs.push(
       this.peer.onData$.subscribe(({ data }) => {
         if (data.type === 'session_state') {
+          const prevActiveId = this._sessionDTO()?.activeStoryId;
+          const newActiveId = data.payload.activeStoryId;
+
+          if (prevActiveId !== newActiveId) {
+            this._myVote.set(null);
+            this._pendingVoteAck = false;
+          } else if (newActiveId && this._myVote()) {
+            const myUserId = this.user.identity()?.userId;
+            const activeStory = data.payload.stories.find(
+              (s: StoryDTO) => s.storyId === newActiveId,
+            );
+            if (myUserId && activeStory?.status === 'voting') {
+              if (activeStory.votedUserIds.includes(myUserId)) {
+                // Host acknowledged our vote — clear pending flag
+                this._pendingVoteAck = false;
+              } else if (!this._pendingVoteAck) {
+                // Not waiting for ack — host reset the round
+                this._myVote.set(null);
+              }
+            }
+          }
+
           this._sessionDTO.set(data.payload);
         } else if (data.type === 'error') {
           this._errorMessage.set(data.payload.message);
@@ -383,6 +406,7 @@ export class SessionService implements OnDestroy {
       this._toastTimer = null;
     }
     this.peer.destroy();
+    this._pendingVoteAck = false;
     this._hostState = null;
     this._isHost.set(false);
     this._sessionDTO.set(null);

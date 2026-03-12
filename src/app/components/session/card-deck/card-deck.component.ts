@@ -27,8 +27,8 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
               [value]="option"
               [faceUp]="true"
               [selected]="selectedValue() === option"
-              [width]="64"
-              [height]="96"
+              [width]="52"
+              [height]="78"
               (cardClicked)="onCardClicked($event)"
             />
           </div>

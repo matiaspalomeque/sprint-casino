@@ -16,7 +16,6 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
       >
         @if (!activeStory()) {
           <div class="text-center">
-            <div class="text-5xl mb-3 opacity-30" aria-hidden="true">🃏</div>
             <p class="text-white/40 text-sm">
               {{
                 (isHost() ? 'voting.board.selectStoryHost' : 'voting.board.waitingForHost')
@@ -30,7 +29,9 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
             <p class="text-white/50 text-xs uppercase tracking-wider mb-1">
               {{ 'voting.board.nowVotingOn' | translate }}
             </p>
-            <h2 class="text-white font-bold text-xl max-w-md">{{ activeStory()!.name }}</h2>
+            <h2 class="text-white font-bold text-xl w-full max-w-xs mx-auto line-clamp-2">
+              {{ activeStory()!.name }}
+            </h2>
           </div>
 
           @if (activeStory()!.status === 'voting') {
@@ -43,7 +44,7 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
                     {{ participant.userName }}
                   </span>
                   @if (hasVoted(participant.userId)) {
-                    <span class="text-green-400 text-xs">✓</span>
+                    <span class="text-green-400 text-xs" aria-hidden="true">✓</span>
                   } @else {
                     <span class="text-transparent text-xs">—</span>
                   }
@@ -104,7 +105,7 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
 
       <!-- Results (shown after reveal) -->
       @if (activeStory()?.status === 'revealed' && activeStory()!.votes) {
-        <div class="mt-4 overflow-y-auto max-h-64">
+        <div class="mt-4">
           <app-results-display [votes]="activeStory()!.votes!" [votingSystem]="votingSystem()" />
         </div>
       }
