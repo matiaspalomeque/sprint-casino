@@ -9,7 +9,7 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
   imports: [FormsModule, TranslatePipe],
   template: `
     <div
-      class="flex flex-col h-full w-full min-w-0 overflow-hidden bg-casino-card border-r border-casino-surface"
+      class="flex flex-col h-full w-full min-w-0 bg-casino-card border-r border-casino-surface"
     >
       <!-- Logo -->
       <div class="flex justify-center py-3 border-b border-casino-surface">
@@ -51,7 +51,7 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
       }
 
       <!-- Story list -->
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1">
         @if (stories().length === 0) {
           <div class="p-4 text-center text-gray-600 text-sm">
             @if (isHost()) {

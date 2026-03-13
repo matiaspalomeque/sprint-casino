@@ -7,7 +7,7 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
   standalone: true,
   imports: [TranslatePipe],
   template: `
-    <div class="h-full overflow-y-auto bg-casino-card border-l border-casino-surface p-4">
+    <div class="h-full bg-casino-card border-l border-casino-surface p-4">
       <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">
         {{ 'participants.players' | translate: { count: participants().length } }}
       </h3>

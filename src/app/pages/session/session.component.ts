@@ -76,7 +76,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     @if (sessionService.connectionStatus() === 'connected' && sessionService.session()) {
       @let session = sessionService.session()!;
 
-      <div class="flex flex-col h-screen overflow-hidden">
+      <div class="flex flex-col min-h-screen">
         <!-- Header -->
         <app-session-header
           [sessionId]="session.sessionId"
@@ -87,10 +87,10 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         />
 
         <!-- Main content -->
-        <div class="flex flex-1 min-h-0">
+        <div class="flex flex-1">
           <!-- Stories sidebar -->
           <div
-            class="hidden md:flex w-56 lg:w-64 max-w-56 lg:max-w-64 flex-shrink-0 overflow-hidden min-w-0"
+            class="hidden md:flex w-56 lg:w-64 max-w-56 lg:max-w-64 flex-shrink-0 min-w-0"
           >
             <app-story-list
               class="flex-1 min-w-0"
@@ -104,7 +104,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           </div>
 
           <!-- Center: voting board -->
-          <div class="flex-1 flex flex-col min-w-0 p-4 gap-4 overflow-y-auto">
+          <div class="flex-1 flex flex-col min-w-0 p-4 gap-4">
             <!-- Mobile story selector -->
             <div class="md:hidden">
               <select
@@ -143,7 +143,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           </div>
 
           <!-- Participants sidebar -->
-          <div class="hidden lg:flex w-52 xl:w-60 flex-shrink-0 overflow-hidden">
+          <div class="hidden lg:flex w-52 xl:w-60 flex-shrink-0">
             <app-participants-panel
               class="flex-1"
               [participants]="session.participants"
