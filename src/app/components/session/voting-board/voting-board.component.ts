@@ -3,6 +3,7 @@ import { StoryDTO, Participant, VotingSystem } from '../../../models/session.typ
 import { VotingCardComponent } from '../voting-card/voting-card.component';
 import { ResultsDisplayComponent } from '../results-display/results-display.component';
 import { TranslatePipe } from '../../../pipes/translate.pipe';
+import { hasVoted, getVoteValue } from '../../../services/story.utils';
 
 @Component({
   selector: 'app-voting-board',
@@ -132,12 +133,10 @@ export class VotingBoardComponent {
   });
 
   hasVoted(userId: string): boolean {
-    return this.activeStory()?.votedUserIds.includes(userId) ?? false;
+    return hasVoted(this.activeStory(), userId);
   }
 
   getVote(userId: string): string {
-    const votes = this.activeStory()?.votes;
-    if (!votes) return '?';
-    return votes.find((v) => v.userId === userId)?.value ?? '?';
+    return getVoteValue(this.activeStory(), userId) ?? '?';
   }
 }

@@ -8,7 +8,7 @@ import { Component, input, output } from '@angular/core';
       class="card-container cursor-pointer select-none"
       [style.width.px]="width()"
       [style.height.px]="height()"
-      (click)="cardClicked.emit(value())"
+      (click)="onClick()"
     >
       <div class="card-inner" [class.flipped]="faceUp()">
         <!-- Back face -->
@@ -45,6 +45,12 @@ export class VotingCardComponent {
   readonly height = input(108);
 
   readonly cardClicked = output<string>();
+
+  onClick(): void {
+    if (this.faceUp()) {
+      this.cardClicked.emit(this.value());
+    }
+  }
 
   valueFontSize(): string {
     const v = this.value();

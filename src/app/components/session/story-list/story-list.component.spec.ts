@@ -16,21 +16,21 @@ describe('StoryListComponent', () => {
     it('emits storyAdded with the trimmed name', () => {
       let emitted: string | undefined;
       component.storyAdded.subscribe((v: string) => (emitted = v));
-      component.newStoryName = '  My Story  ';
+      component.newStoryName.set('  My Story  ');
       component.addStory();
       expect(emitted).toBe('My Story');
     });
 
     it('clears newStoryName after adding', () => {
-      component.newStoryName = 'Story';
+      component.newStoryName.set('Story');
       component.addStory();
-      expect(component.newStoryName).toBe('');
+      expect(component.newStoryName()).toBe('');
     });
 
     it('does not emit for empty name', () => {
       let emitted: string | undefined;
       component.storyAdded.subscribe((v: string) => (emitted = v));
-      component.newStoryName = '';
+      component.newStoryName.set('');
       component.addStory();
       expect(emitted).toBeUndefined();
     });
@@ -38,7 +38,7 @@ describe('StoryListComponent', () => {
     it('does not emit for whitespace-only name', () => {
       let emitted: string | undefined;
       component.storyAdded.subscribe((v: string) => (emitted = v));
-      component.newStoryName = '   ';
+      component.newStoryName.set('   ');
       component.addStory();
       expect(emitted).toBeUndefined();
     });

@@ -12,6 +12,8 @@ class MockPeerService {
   onConnection$ = new Subject<unknown>();
   onData$ = new Subject<IncomingData>();
   onDisconnect$ = new Subject<string>();
+  onReconnecting$ = new Subject<void>();
+  onReconnected$ = new Subject<void>();
   onError$ = new Subject<{ type: string; message: string }>();
 
   createHost = vi.fn().mockResolvedValue(undefined);

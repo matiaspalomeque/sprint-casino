@@ -26,7 +26,7 @@ export class SessionService implements OnDestroy {
   private readonly _sessionDTO = signal<SessionStateDTO | null>(null);
   private readonly _myVote = signal<string | null>(null);
   private readonly _connectionStatus = signal<
-    'idle' | 'connecting' | 'connected' | 'error' | 'ended'
+    'idle' | 'connecting' | 'connected' | 'reconnecting' | 'error' | 'ended'
   >('idle');
   private readonly _errorMessage = signal<string | null>(null);
   private readonly _toastMessage = signal<string | null>(null);
@@ -58,8 +58,27 @@ export class SessionService implements OnDestroy {
     const identity = this.user.identity();
     if (!identity) throw new Error('No user identity');
 
-    const sessionId = generateSessionCode();
     const votingOptions = getVotingOptions(config.votingSystem, config.customOptions);
+    const maxRetries = 3;
+
+    this._isHost.set(true);
+    this._connectionStatus.set('connecting');
+
+    let sessionId = '';
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      sessionId = generateSessionCode();
+      try {
+        await this.peer.createHost(sessionId);
+        break;
+      } catch (err: unknown) {
+        const peerErr = err as { type?: string };
+        if (peerErr?.type !== 'unavailable-id' || attempt === maxRetries - 1) {
+          this._connectionStatus.set('error');
+          this._errorMessage.set('session.errors.createFailed');
+          throw new Error('Peer creation failed');
+        }
+      }
+    }
 
     this._hostState = {
       sessionId,
@@ -68,22 +87,10 @@ export class SessionService implements OnDestroy {
       votingOptions,
       revealPolicy: config.revealPolicy,
       hostId: identity.userId,
-      hostName: identity.userName,
       participants: [{ userId: identity.userId, userName: identity.userName, isHost: true }],
       stories: [],
       activeStoryId: null,
     };
-
-    this._isHost.set(true);
-    this._connectionStatus.set('connecting');
-
-    try {
-      await this.peer.createHost(sessionId);
-    } catch {
-      this._connectionStatus.set('error');
-      this._errorMessage.set('session.errors.createFailed');
-      throw new Error('Peer creation failed');
-    }
 
     this._connectionStatus.set('connected');
     this._sessionDTO.set(this._toDTO(this._hostState));
@@ -347,6 +354,20 @@ export class SessionService implements OnDestroy {
           this._sessionDTO.set(data.payload);
         } else if (data.type === 'error') {
           this._errorMessage.set(data.payload.message);
+        }
+      }),
+      this.peer.onReconnecting$.subscribe(() => {
+        this._connectionStatus.set('reconnecting');
+      }),
+      this.peer.onReconnected$.subscribe(() => {
+        this._connectionStatus.set('connected');
+        // Re-send join message after reconnection
+        const identity = this.user.identity();
+        if (identity) {
+          this.peer.sendToHost({
+            type: 'join',
+            payload: { userId: identity.userId, userName: identity.userName },
+          });
         }
       }),
       this.peer.onDisconnect$.subscribe(() => {

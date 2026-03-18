@@ -11,6 +11,8 @@ class MockPeerService {
   onConnection$ = new Subject<unknown>();
   onData$ = new Subject<unknown>();
   onDisconnect$ = new Subject<string>();
+  onReconnecting$ = new Subject<void>();
+  onReconnected$ = new Subject<void>();
   onError$ = new Subject<{ type: string; message: string }>();
   createHost = vi.fn().mockResolvedValue(undefined);
   connectToHost = vi.fn().mockResolvedValue(undefined);
@@ -62,25 +64,25 @@ describe('LandingComponent', () => {
     beforeEach(() => userService.setUserName('Alice'));
 
     it('sets joinError for code shorter than 6 chars', () => {
-      component.joinCode = 'ABC';
+      component.joinCode.set('ABC');
       component.joinSession();
       expect(component.joinError()).toBe('landing.errors.invalidCode');
     });
 
     it('sets joinError for code longer than 6 chars', () => {
-      component.joinCode = 'ABCDEFG';
+      component.joinCode.set('ABCDEFG');
       component.joinSession();
       expect(component.joinError()).toBe('landing.errors.invalidCode');
     });
 
     it('navigates to session for valid 6-char code', () => {
-      component.joinCode = 'abc123';
+      component.joinCode.set('abc123');
       component.joinSession();
       expect(router.navigate).toHaveBeenCalledWith(['/session', 'ABC123']);
     });
 
     it('trims and uppercases the join code', () => {
-      component.joinCode = '  abcdef  ';
+      component.joinCode.set('  abcdef  ');
       component.joinSession();
       expect(router.navigate).toHaveBeenCalledWith(['/session', 'ABCDEF']);
     });
@@ -102,28 +104,28 @@ describe('LandingComponent', () => {
       }).compileComponents();
       const freshFixture = TestBed.createComponent(LandingComponent);
       const freshComp = freshFixture.componentInstance;
-      freshComp.createForm.sessionName = 'Test';
+      freshComp.sessionName.set('Test');
       await freshComp.createSession();
       expect(router.navigate).not.toHaveBeenCalled();
     });
 
     it('sets createError when session name is empty', async () => {
-      component.createForm.sessionName = '   ';
+      component.sessionName.set('   ');
       await component.createSession();
       expect(component.createError()).toBe('landing.errors.sessionNameRequired');
     });
 
     it('sets createError for custom voting with fewer than 2 values', async () => {
-      component.createForm.sessionName = 'Sprint 1';
-      component.createForm.votingSystem = 'custom';
-      component.createForm.customOptions = 'A';
+      component.sessionName.set('Sprint 1');
+      component.votingSystem.set('custom');
+      component.customOptions.set('A');
       await component.createSession();
       expect(component.createError()).toBe('landing.errors.customVoting');
     });
 
     it('navigates to session on successful creation', async () => {
-      component.createForm.sessionName = 'Sprint 1';
-      component.createForm.votingSystem = 'fibonacci';
+      component.sessionName.set('Sprint 1');
+      component.votingSystem.set('fibonacci');
       await component.createSession();
       expect(router.navigate).toHaveBeenCalledWith(['/session', expect.any(String)]);
       expect(component.creating()).toBe(false);
@@ -132,7 +134,7 @@ describe('LandingComponent', () => {
     it('sets createError when session creation throws', async () => {
       const sessionService = TestBed.inject(SessionService);
       vi.spyOn(sessionService, 'createSession').mockRejectedValueOnce(new Error('fail'));
-      component.createForm.sessionName = 'Sprint 1';
+      component.sessionName.set('Sprint 1');
       await component.createSession();
       expect(component.createError()).toBe('landing.errors.createFailed');
       expect(component.creating()).toBe(false);

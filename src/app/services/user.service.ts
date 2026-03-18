@@ -36,7 +36,14 @@ export class UserService {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
       const parsed = JSON.parse(raw);
-      if (parsed?.userId && parsed?.userName) return parsed as UserIdentity;
+      if (
+        typeof parsed?.userId === 'string' &&
+        parsed.userId &&
+        typeof parsed?.userName === 'string' &&
+        parsed.userName
+      ) {
+        return { userId: parsed.userId, userName: parsed.userName };
+      }
       return null;
     } catch {
       return null;

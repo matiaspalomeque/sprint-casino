@@ -40,9 +40,14 @@ export class CopyLinkComponent {
 
   copy(): void {
     const url = `${window.location.origin}${window.location.pathname}#/session/${this.sessionId()}`;
-    navigator.clipboard.writeText(url).then(() => {
-      this.copied.set(true);
-      setTimeout(() => this.copied.set(false), 2000);
-    });
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        this.copied.set(true);
+        setTimeout(() => this.copied.set(false), 2000);
+      })
+      .catch(() => {
+        // Clipboard API unavailable (HTTP context, iframe restriction, etc.)
+      });
   }
 }

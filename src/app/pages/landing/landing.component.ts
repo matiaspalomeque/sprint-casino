@@ -4,9 +4,8 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SessionService } from '../../services/session.service';
 import { NamePromptComponent } from '../../components/shared/name-prompt/name-prompt.component';
-import { CreateSessionConfig, VotingSystem, RevealPolicy } from '../../models/session.types';
+import { VotingSystem, RevealPolicy } from '../../models/session.types';
 import { getVotingOptions } from '../../services/voting.utils';
-import { I18nService } from '../../services/i18n.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { LanguageSwitcherComponent } from '../../components/shared/language-switcher/language-switcher.component';
 
@@ -61,7 +60,8 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                 >
                 <input
                   type="text"
-                  [(ngModel)]="createForm.sessionName"
+                  [ngModel]="sessionName()"
+                  (ngModelChange)="sessionName.set($event)"
                   name="sessionName"
                   [placeholder]="'landing.sessionNamePlaceholder' | translate"
                   maxlength="50"
@@ -80,14 +80,14 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                   @for (system of votingSystems; track system) {
                     <button
                       type="button"
-                      (click)="createForm.votingSystem = system"
+                      (click)="votingSystem.set(system)"
                       class="p-2.5 rounded-lg border text-sm transition-all text-left"
-                      [class.border-gold]="createForm.votingSystem === system"
-                      [class.bg-gold/10]="createForm.votingSystem === system"
-                      [class.text-gold]="createForm.votingSystem === system"
-                      [class.border-casino-border]="createForm.votingSystem !== system"
-                      [class.text-gray-400]="createForm.votingSystem !== system"
-                      [class.hover:border-gold/40]="createForm.votingSystem !== system"
+                      [class.border-gold]="votingSystem() === system"
+                      [class.bg-gold/10]="votingSystem() === system"
+                      [class.text-gold]="votingSystem() === system"
+                      [class.border-casino-border]="votingSystem() !== system"
+                      [class.text-gray-400]="votingSystem() !== system"
+                      [class.hover:border-gold/40]="votingSystem() !== system"
                     >
                       <div class="font-medium">
                         {{ 'voting.systems.' + system + '.label' | translate }}
@@ -101,7 +101,7 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
               </div>
 
               <!-- Custom values -->
-              @if (createForm.votingSystem === 'custom') {
+              @if (votingSystem() === 'custom') {
                 <div>
                   <label
                     class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
@@ -109,7 +109,8 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                   >
                   <input
                     type="text"
-                    [(ngModel)]="createForm.customOptions"
+                    [ngModel]="customOptions()"
+                    (ngModelChange)="customOptions.set($event)"
                     name="customOptions"
                     [placeholder]="'landing.customValuesPlaceholder' | translate"
                     class="w-full bg-casino-surface border border-casino-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/60 transition-colors text-sm"
@@ -129,25 +130,25 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                 <div class="flex gap-2">
                   <button
                     type="button"
-                    (click)="createForm.revealPolicy = 'host_only'"
+                    (click)="revealPolicy.set('host_only')"
                     class="flex-1 py-2 px-3 rounded-lg border text-sm transition-all"
-                    [class.border-gold]="createForm.revealPolicy === 'host_only'"
-                    [class.bg-gold/10]="createForm.revealPolicy === 'host_only'"
-                    [class.text-gold]="createForm.revealPolicy === 'host_only'"
-                    [class.border-casino-border]="createForm.revealPolicy !== 'host_only'"
-                    [class.text-gray-400]="createForm.revealPolicy !== 'host_only'"
+                    [class.border-gold]="revealPolicy() === 'host_only'"
+                    [class.bg-gold/10]="revealPolicy() === 'host_only'"
+                    [class.text-gold]="revealPolicy() === 'host_only'"
+                    [class.border-casino-border]="revealPolicy() !== 'host_only'"
+                    [class.text-gray-400]="revealPolicy() !== 'host_only'"
                   >
                     {{ 'landing.hostOnly' | translate }}
                   </button>
                   <button
                     type="button"
-                    (click)="createForm.revealPolicy = 'anyone'"
+                    (click)="revealPolicy.set('anyone')"
                     class="flex-1 py-2 px-3 rounded-lg border text-sm transition-all"
-                    [class.border-gold]="createForm.revealPolicy === 'anyone'"
-                    [class.bg-gold/10]="createForm.revealPolicy === 'anyone'"
-                    [class.text-gold]="createForm.revealPolicy === 'anyone'"
-                    [class.border-casino-border]="createForm.revealPolicy !== 'anyone'"
-                    [class.text-gray-400]="createForm.revealPolicy !== 'anyone'"
+                    [class.border-gold]="revealPolicy() === 'anyone'"
+                    [class.bg-gold/10]="revealPolicy() === 'anyone'"
+                    [class.text-gold]="revealPolicy() === 'anyone'"
+                    [class.border-casino-border]="revealPolicy() !== 'anyone'"
+                    [class.text-gray-400]="revealPolicy() !== 'anyone'"
                   >
                     {{ 'landing.anyone' | translate }}
                   </button>
@@ -182,11 +183,11 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                 >
                 <input
                   type="text"
-                  [(ngModel)]="joinCode"
+                  [ngModel]="joinCode()"
+                  (ngModelChange)="joinCode.set($event.toUpperCase())"
                   name="joinCode"
                   placeholder="ABC123"
                   maxlength="6"
-                  (input)="joinCode = joinCode.toUpperCase()"
                   autocomplete="off"
                   class="w-full bg-casino-surface border border-casino-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/30 transition-colors text-sm font-mono tracking-widest text-center text-lg"
                 />
@@ -198,7 +199,7 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
 
               <button
                 type="submit"
-                [disabled]="joinCode.length < 6"
+                [disabled]="joinCode().length < 6"
                 class="btn-gold w-full py-3 rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {{ 'landing.joinTable' | translate }}
@@ -227,20 +228,17 @@ export class LandingComponent {
   readonly userService = inject(UserService);
   private readonly session = inject(SessionService);
   private readonly router = inject(Router);
-  private readonly i18n = inject(I18nService);
 
   readonly creating = signal(false);
   readonly createError = signal<string | null>(null);
   readonly joinError = signal<string | null>(null);
 
-  joinCode = '';
+  readonly joinCode = signal('');
 
-  createForm: CreateSessionConfig = {
-    sessionName: '',
-    votingSystem: 'fibonacci',
-    revealPolicy: 'host_only',
-    customOptions: '',
-  };
+  readonly sessionName = signal('');
+  readonly votingSystem = signal<VotingSystem>('fibonacci');
+  readonly customOptions = signal('');
+  readonly revealPolicy = signal<RevealPolicy>('host_only');
 
   readonly votingSystems: VotingSystem[] = ['fibonacci', 'tshirt', 'high_level', 'custom'];
 
@@ -253,14 +251,14 @@ export class LandingComponent {
   async createSession(): Promise<void> {
     if (!this.userService.hasIdentity()) return;
 
-    const name = this.createForm.sessionName.trim();
+    const name = this.sessionName().trim();
     if (!name) {
       this.createError.set('landing.errors.sessionNameRequired');
       return;
     }
 
-    if (this.createForm.votingSystem === 'custom') {
-      const opts = getVotingOptions('custom', this.createForm.customOptions);
+    if (this.votingSystem() === 'custom') {
+      const opts = getVotingOptions('custom', this.customOptions());
       if (opts.length < 3) {
         this.createError.set('landing.errors.customVoting');
         return;
@@ -270,8 +268,15 @@ export class LandingComponent {
     this.creating.set(true);
     this.createError.set(null);
 
+    const config = {
+      sessionName: name,
+      votingSystem: this.votingSystem(),
+      revealPolicy: this.revealPolicy(),
+      customOptions: this.customOptions(),
+    };
+
     try {
-      const sessionId = await this.session.createSession(this.createForm);
+      const sessionId = await this.session.createSession(config);
       this.creating.set(false);
       this.router.navigate(['/session', sessionId]);
     } catch {
@@ -281,7 +286,7 @@ export class LandingComponent {
   }
 
   joinSession(): void {
-    const code = this.joinCode.trim().toUpperCase();
+    const code = this.joinCode().trim().toUpperCase();
     if (code.length !== 6) {
       this.joinError.set('landing.errors.invalidCode');
       return;

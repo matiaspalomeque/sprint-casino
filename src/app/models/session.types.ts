@@ -22,7 +22,6 @@ export interface SessionState {
   votingOptions: string[];
   revealPolicy: RevealPolicy;
   hostId: string;
-  hostName: string;
   participants: Participant[];
   stories: Story[];
   activeStoryId: string | null;
@@ -88,6 +87,15 @@ export interface ErrorMessage {
 export type ParticipantMessage = JoinMessage | CastVoteMessage | RevealMessage | LeaveMessage;
 export type HostMessage = SessionStateMessage | ErrorMessage;
 export type PeerMessage = ParticipantMessage | HostMessage;
+
+export const PEER_MESSAGE_TYPES = [
+  'join',
+  'cast_vote',
+  'reveal_votes',
+  'leave',
+  'session_state',
+  'error',
+] as const;
 
 export interface CreateSessionConfig {
   sessionName: string;

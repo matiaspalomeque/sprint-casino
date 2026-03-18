@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { Participant, StoryDTO } from '../../../models/session.types';
 import { TranslatePipe } from '../../../pipes/translate.pipe';
+import { hasVoted, getVoteValue } from '../../../services/story.utils';
 
 @Component({
   selector: 'app-participants-panel',
@@ -78,13 +79,11 @@ export class ParticipantsPanelComponent {
   readonly currentUserId = input<string | null>(null);
 
   hasVoted(userId: string): boolean {
-    return this.activeStory()?.votedUserIds.includes(userId) ?? false;
+    return hasVoted(this.activeStory(), userId);
   }
 
   getVote(userId: string): string | null {
-    const votes = this.activeStory()?.votes;
-    if (!votes) return null;
-    return votes.find((v) => v.userId === userId)?.value ?? null;
+    return getVoteValue(this.activeStory(), userId);
   }
 
   getAvatarColor(name: string): string {

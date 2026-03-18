@@ -42,14 +42,23 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       </div>
     }
 
+    @if (sessionService.connectionStatus() === 'reconnecting') {
+      <div
+        class="fixed top-0 left-0 right-0 z-50 bg-gold/90 text-black text-center py-2 text-sm font-medium"
+      >
+        {{ 'session.reconnecting' | translate }}
+      </div>
+    }
+
     @if (sessionService.connectionStatus() === 'error') {
       <div class="min-h-screen flex items-center justify-center">
         <div class="text-center max-w-sm mx-auto px-4">
           <h2 class="text-white font-bold text-xl mb-2">
             {{ 'session.connectionFailed' | translate }}
           </h2>
+          @let errorKey = sessionService.errorMessage() ?? 'session.couldNotConnect';
           <p class="text-gray-400 text-sm mb-6">
-            {{ sessionService.errorMessage() ?? 'session.couldNotConnect' | translate }}
+            {{ errorKey | translate }}
           </p>
           <button (click)="goHome()" class="btn-gold px-6 py-2.5 rounded-xl text-sm">
             {{ 'session.backToLobby' | translate }}
@@ -89,9 +98,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         <!-- Main content -->
         <div class="flex flex-1">
           <!-- Stories sidebar -->
-          <div
-            class="hidden md:flex w-56 lg:w-64 max-w-56 lg:max-w-64 flex-shrink-0 min-w-0"
-          >
+          <div class="hidden md:flex w-56 lg:w-64 max-w-56 lg:max-w-64 flex-shrink-0 min-w-0">
             <app-story-list
               class="flex-1 min-w-0"
               [stories]="session.stories"

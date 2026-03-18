@@ -66,12 +66,24 @@ describe('VotingCardComponent', () => {
   });
 
   describe('cardClicked output', () => {
-    it('emits the card value on click', () => {
-      createComponent('8');
+    it('emits the card value on click when face up', () => {
+      fixture = TestBed.createComponent(VotingCardComponent);
+      fixture.componentRef.setInput('value', '8');
+      fixture.componentRef.setInput('faceUp', true);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
       let emitted: string | undefined;
       component.cardClicked.subscribe((v: string) => (emitted = v));
       fixture.nativeElement.querySelector('.card-container').click();
       expect(emitted).toBe('8');
+    });
+
+    it('does not emit on click when face down', () => {
+      createComponent('8');
+      let emitted: string | undefined;
+      component.cardClicked.subscribe((v: string) => (emitted = v));
+      fixture.nativeElement.querySelector('.card-container').click();
+      expect(emitted).toBeUndefined();
     });
   });
 });

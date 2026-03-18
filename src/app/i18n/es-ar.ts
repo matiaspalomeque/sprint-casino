@@ -48,6 +48,7 @@ export const esAr: Translations = {
   session: {
     settingUp: 'Configurando sesión...',
     joining: 'Uniéndose a la sesión...',
+    reconnecting: 'Reconectando...',
     connectionFailed: 'Falla de Conexión',
     couldNotConnect: 'No se pudo conectar a la sesión.',
     backToLobby: 'Volver al Inicio',

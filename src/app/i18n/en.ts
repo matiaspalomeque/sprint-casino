@@ -46,6 +46,7 @@ export const en = {
   session: {
     settingUp: 'Setting up session...',
     joining: 'Joining session...',
+    reconnecting: 'Reconnecting...',
     connectionFailed: 'Connection Failed',
     couldNotConnect: 'Could not connect to the session.',
     backToLobby: 'Back to Lobby',

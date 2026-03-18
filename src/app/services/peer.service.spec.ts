@@ -144,4 +144,54 @@ describe('PeerService', () => {
       expect(conn?.connectionId).toBe('conn-u');
     });
   });
+
+  // ── Message validation ─────────────────────────────────────────────────
+
+  describe('message validation (via _isValidPeerMessage)', () => {
+    // Access private method for testing
+    function isValid(data: unknown): boolean {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return (service as any)._isValidPeerMessage(data);
+    }
+
+    it('accepts a valid join message', () => {
+      expect(isValid({ type: 'join', payload: { userId: 'u', userName: 'U' } })).toBe(true);
+    });
+
+    it('accepts a valid cast_vote message', () => {
+      expect(isValid({ type: 'cast_vote', payload: { storyId: 's', value: '5' } })).toBe(true);
+    });
+
+    it('accepts a valid session_state message', () => {
+      expect(isValid({ type: 'session_state', payload: {} })).toBe(true);
+    });
+
+    it('rejects null', () => {
+      expect(isValid(null)).toBe(false);
+    });
+
+    it('rejects a string', () => {
+      expect(isValid('hello')).toBe(false);
+    });
+
+    it('rejects an object without type', () => {
+      expect(isValid({ payload: {} })).toBe(false);
+    });
+
+    it('rejects an unknown type', () => {
+      expect(isValid({ type: 'hack', payload: {} })).toBe(false);
+    });
+
+    it('rejects when payload is missing', () => {
+      expect(isValid({ type: 'join' })).toBe(false);
+    });
+
+    it('rejects when payload is null', () => {
+      expect(isValid({ type: 'join', payload: null })).toBe(false);
+    });
+
+    it('rejects when payload is a primitive', () => {
+      expect(isValid({ type: 'join', payload: 'bad' })).toBe(false);
+    });
+  });
 });
