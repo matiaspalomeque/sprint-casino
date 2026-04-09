@@ -16,8 +16,8 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
         class="felt-table rounded-2xl flex-1 flex flex-col items-center justify-center p-6 relative min-h-[280px]"
       >
         @if (!activeStory()) {
-          <div class="text-center">
-            <p class="text-white/40 text-sm">
+          <div class="text-center animate-fade-in">
+            <p class="text-white/30 text-sm font-medium">
               {{
                 (isHost() ? 'voting.board.selectStoryHost' : 'voting.board.waitingForHost')
                   | translate
@@ -26,11 +26,13 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
           </div>
         } @else {
           <!-- Story name -->
-          <div class="text-center mb-6">
-            <p class="text-white/50 text-xs uppercase tracking-wider mb-1">
+          <div class="text-center mb-6 animate-fade-in">
+            <p class="text-white/40 text-[10px] uppercase tracking-[0.2em] font-semibold mb-1.5">
               {{ 'voting.board.nowVotingOn' | translate }}
             </p>
-            <h2 class="text-white font-bold text-xl w-full max-w-xs mx-auto line-clamp-2">
+            <h2
+              class="text-white font-bold text-xl w-full max-w-xs mx-auto line-clamp-2 tracking-tight"
+            >
               {{ activeStory()!.name }}
             </h2>
           </div>
@@ -41,7 +43,7 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
               @for (participant of participants(); track participant.userId) {
                 <div class="flex flex-col items-center gap-1.5">
                   <app-voting-card [value]="''" [faceUp]="false" [width]="52" [height]="78" />
-                  <span class="text-xs text-white/60 max-w-[60px] truncate text-center">
+                  <span class="text-[11px] text-white/50 max-w-[60px] truncate text-center">
                     {{ participant.userName }}
                   </span>
                   @if (hasVoted(participant.userId)) {
@@ -54,7 +56,7 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
             </div>
 
             <!-- Vote count progress -->
-            <div class="text-white/40 text-xs mb-4">
+            <div class="text-white/30 text-xs font-medium mb-4">
               {{
                 'voting.board.voted'
                   | translate: { current: voteCount(), total: participants().length }
@@ -66,7 +68,7 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
               <button
                 (click)="revealVotes.emit()"
                 [disabled]="voteCount() === 0"
-                class="btn-gold px-8 py-2.5 rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
+                class="btn-gold px-8 py-2.5 rounded-xl text-sm"
               >
                 {{ 'voting.board.revealCards' | translate }}
               </button>
@@ -77,14 +79,16 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
             <!-- Revealed state: face-up cards -->
             <div class="flex flex-wrap gap-3 justify-center mb-4">
               @for (participant of participants(); track participant.userId; let i = $index) {
-                <div class="flex flex-col items-center gap-1.5">
+                <div class="flex flex-col items-center gap-1.5 animate-fade-in-up"
+                  [style.animation-delay]="(i * 60) + 'ms'"
+                >
                   <app-voting-card
                     [value]="getVote(participant.userId)"
                     [faceUp]="true"
                     [width]="52"
                     [height]="78"
                   />
-                  <span class="text-xs text-white/60 max-w-[60px] truncate text-center">
+                  <span class="text-[11px] text-white/50 max-w-[60px] truncate text-center">
                     {{ participant.userName }}
                   </span>
                 </div>
@@ -95,7 +99,7 @@ import { hasVoted, getVoteValue } from '../../../services/story.utils';
             @if (isHost()) {
               <button
                 (click)="resetVotes.emit()"
-                class="mt-2 px-6 py-2 rounded-xl text-sm border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
+                class="mt-2 px-6 py-2 rounded-xl text-xs font-medium border border-white/10 text-white/50 hover:text-white hover:border-white/25 transition-all duration-200"
               >
                 {{ 'voting.board.newRound' | translate }}
               </button>

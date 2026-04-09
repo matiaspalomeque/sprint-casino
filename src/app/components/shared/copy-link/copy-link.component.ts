@@ -8,16 +8,20 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
   template: `
     <button
       (click)="copy()"
-      class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-casino-surface border border-casino-border hover:border-gold/50 text-sm text-gray-300 hover:text-white transition-all"
+      class="flex items-center gap-2 px-3 py-2 rounded-xl glass-panel-sm hover:border-gold/25 text-sm transition-all duration-200 group"
       [attr.aria-label]="'copyLink.sessionCode' | translate: { code: sessionId() }"
       [title]="'copyLink.sessionCode' | translate: { code: sessionId() }"
     >
-      <span class="font-mono font-bold tracking-widest text-gold">{{ sessionId() }}</span>
+      <span class="font-mono font-bold tracking-[0.2em] text-gold text-xs">{{
+        sessionId()
+      }}</span>
       @if (copied()) {
-        <span class="text-green-400 text-xs">{{ 'copyLink.copied' | translate }}</span>
+        <span class="text-green-400 text-[10px] font-medium animate-fade-in">{{
+          'copyLink.copied' | translate
+        }}</span>
       } @else {
         <svg
-          class="w-4 h-4"
+          class="w-3.5 h-3.5 text-gray-500 group-hover:text-gray-300 transition-colors"
           aria-hidden="true"
           fill="none"
           stroke="currentColor"

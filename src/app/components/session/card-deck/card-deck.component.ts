@@ -7,21 +7,24 @@ import { TranslatePipe } from '../../../pipes/translate.pipe';
   standalone: true,
   imports: [VotingCardComponent, TranslatePipe],
   template: `
-    <div class="flex flex-col items-center gap-3">
+    <div class="flex flex-col items-center gap-3 animate-fade-in-up">
       @if (!disabled()) {
-        <p class="text-gray-400 text-xs">{{ 'deck.pickYourCard' | translate }}</p>
+        <p class="text-gray-500 text-xs font-medium tracking-wide">
+          {{ 'deck.pickYourCard' | translate }}
+        </p>
       } @else {
-        <p class="text-gray-600 text-xs">
+        <p class="text-gray-700 text-xs">
           {{ (noActiveStory() ? 'deck.selectStoryToVote' : 'deck.votingClosed') | translate }}
         </p>
       }
 
-      <div class="flex gap-2 pb-2 pt-4 px-2 max-w-full justify-center flex-wrap">
+      <div class="flex gap-2 pb-2 pt-3 px-2 max-w-full justify-center flex-wrap">
         @for (option of options(); track option) {
           <div
-            class="transition-transform duration-150"
-            [class.opacity-40]="disabled()"
+            class="transition-all duration-200 ease-out"
+            [class.opacity-30]="disabled()"
             [class.-translate-y-3]="selectedValue() === option && !disabled()"
+            [class.scale-105]="selectedValue() === option && !disabled()"
           >
             <app-voting-card
               [value]="option"

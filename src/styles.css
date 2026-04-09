@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @source ".";
 
@@ -9,28 +9,86 @@
   --color-gold: #D4AF37;
   --color-gold-light: #FFDF6B;
   --color-gold-dark: #A88820;
-  --color-casino-dark: #24272D;
-  --color-casino-deep: #0a0f1a;
-  --color-casino-card: #1c1c1c;
-  --color-casino-surface: #1f2937;
-  --color-casino-border: #374151;
+  --color-casino-dark: #121419;
+  --color-casino-deep: #0a0d12;
+  --color-casino-card: #17191f;
+  --color-casino-surface: #1e2028;
+  --color-casino-border: #2a2d38;
   --color-card-ink: #1a1a2e;
+  --color-casino-glow: rgba(212, 175, 55, 0.06);
   --font-family-sans: 'Inter', system-ui, sans-serif;
 }
+
+/* ─── Base ─────────────────────────────────────────── */
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: #24272D;
-  color: #f9fafb;
+  background-color: var(--color-casino-dark);
+  color: #f0f0f5;
   font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
   min-height: 100vh;
 }
 
-/* Card 3D flip styles */
+/* ─── Ambient background ───────────────────────────── */
+
+@keyframes ambientGlow {
+  0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 0.55; transform: translate(-50%, -50%) scale(1.15); }
+}
+
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ambient-bg::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.07) 0%, transparent 70%);
+  animation: ambientGlow 8s ease-in-out infinite;
+}
+
+/* Subtle noise texture overlay */
+.ambient-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3;
+}
+
+/* ─── Glass panel ──────────────────────────────────── */
+
+.glass-panel {
+  background: rgba(23, 25, 31, 0.75);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+}
+
+.glass-panel-sm {
+  background: rgba(23, 25, 31, 0.65);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+}
+
+/* ─── Card 3D flip ─────────────────────────────────── */
+
 .card-container {
   perspective: 1000px;
 }
@@ -40,7 +98,7 @@ body {
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.5s cubic-bezier(.4, 0, .2, 1);
 }
 
 .card-inner.flipped {
@@ -53,7 +111,7 @@ body {
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 0.5rem;
+  border-radius: 0.625rem;
 }
 
 .card-back {
@@ -61,61 +119,168 @@ body {
   background-image:
     repeating-linear-gradient(
       45deg,
-      rgba(212, 175, 55, 0.06) 0px,
-      rgba(212, 175, 55, 0.06) 1px,
+      rgba(212, 175, 55, 0.05) 0px,
+      rgba(212, 175, 55, 0.05) 1px,
       transparent 1px,
       transparent 8px
     );
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .card-front {
-  background: #f8f5e4;
+  background: linear-gradient(160deg, #faf7ee 0%, #f0ebd4 100%);
   color: var(--color-card-ink);
   transform: rotateY(180deg);
-  border: 1px solid rgba(212, 175, 55, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Felt table radial gradient */
+/* ─── Felt table ───────────────────────────────────── */
+
 .felt-table {
   background: radial-gradient(ellipse at center, #0d7a29 0%, #0B6623 50%, #064016 100%);
-  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(212, 175, 55, 0.12);
+  position: relative;
 }
 
-/* Gold shimmer button */
+/* Subtle felt-table vignette border */
+.felt-table::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgba(212, 175, 55, 0.08);
+  pointer-events: none;
+}
+
+/* ─── Gold shimmer button ──────────────────────────── */
+
+@keyframes goldShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
 .btn-gold {
-  background: linear-gradient(135deg, #D4AF37 0%, #FFDF6B 50%, #D4AF37 100%);
-  background-size: 200% auto;
-  color: #24272D;
-  font-weight: 600;
-  transition: background-position 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  background: linear-gradient(110deg, #c9a22c 0%, #f5da5e 25%, #d4af37 50%, #f5da5e 75%, #c9a22c 100%);
+  background-size: 300% auto;
+  color: #121419;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: box-shadow 0.25s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-gold:hover:not(:disabled) {
-  background-position: right center;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  animation: goldShimmer 1.6s ease-in-out;
+  box-shadow: 0 0 28px rgba(212, 175, 55, 0.35), 0 0 8px rgba(212, 175, 55, 0.15);
   transform: translateY(-1px);
 }
 
 .btn-gold:active:not(:disabled) {
   transform: translateY(0);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
+.btn-gold:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Chip dot decoration ──────────────────────────── */
+
+.chip-dot {
   width: 6px;
   height: 6px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* ─── Input focus ring ─────────────────────────────── */
+
+.input-casino {
+  background: var(--color-casino-surface);
+  border: 1px solid var(--color-casino-border);
+  border-radius: 0.625rem;
+  padding: 0.75rem 1rem;
+  color: #f0f0f5;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  width: 100%;
+}
+
+.input-casino::placeholder {
+  color: #4b5060;
+}
+
+.input-casino:focus {
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+/* ─── Animations ───────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.3); }
+  50%      { box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.35s ease-out both;
+}
+
+/* ─── Scrollbar ────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-casino-card);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #374151;
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ─── Selection ────────────────────────────────────── */
+
+::selection {
+  background: rgba(212, 175, 55, 0.3);
+  color: #fff;
 }

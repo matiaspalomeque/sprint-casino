@@ -18,44 +18,53 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
       <app-name-prompt (named)="onNamed()" />
     }
 
-    <div class="min-h-screen flex flex-col">
+    <div class="ambient-bg"></div>
+
+    <div class="min-h-screen flex flex-col relative z-10">
       <!-- Top bar -->
-      <div class="flex justify-end px-4 pt-3">
+      <div class="flex justify-end px-6 pt-4">
         <app-language-switcher />
       </div>
+
       <!-- Hero -->
       <div
-        class="flex flex-col md:flex-row items-center justify-center gap-6 pt-6 pb-6 px-4 max-w-6xl mx-auto"
+        class="flex flex-col md:flex-row items-center justify-center gap-8 pt-4 pb-6 px-6 max-w-5xl mx-auto animate-fade-in-up"
       >
         <img
           src="sprint-casino.png"
           alt="Sprint Casino"
-          class="w-full max-w-[340px] h-auto object-contain drop-shadow-2xl"
+          class="w-full max-w-[280px] h-auto object-contain drop-shadow-2xl"
         />
         <div class="text-center md:text-left">
-          <h1 class="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-md">
+          <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-3 tracking-tight">
             Sprint <span class="text-gold">Casino</span>
           </h1>
-          <p class="text-gray-400 text-xl max-w-md mx-auto md:mx-0">
+          <p class="text-gray-500 text-lg max-w-sm mx-auto md:mx-0 leading-relaxed">
             {{ 'landing.tagline' | translate }}
           </p>
         </div>
       </div>
 
       <!-- Cards -->
-      <div class="flex-1 flex items-start justify-center px-4 pb-12">
-        <div class="w-full max-w-4xl grid md:grid-cols-2 gap-6">
+      <div class="flex-1 flex items-start justify-center px-4 md:px-6 pb-16">
+        <div class="w-full max-w-4xl grid md:grid-cols-2 gap-5">
           <!-- Create session card -->
-          <div class="bg-casino-card border border-casino-surface rounded-2xl p-6">
-            <h2 class="text-white font-bold text-xl mb-5 flex items-center gap-2">
-              <span>✦</span> {{ 'landing.newSession' | translate }}
+          <div
+            class="glass-panel p-6 animate-fade-in-up"
+            style="animation-delay: 0.05s"
+          >
+            <h2
+              class="text-white font-bold text-lg mb-5 flex items-center gap-2.5"
+            >
+              <span class="chip-dot"></span>
+              {{ 'landing.newSession' | translate }}
             </h2>
 
             <form (ngSubmit)="createSession()" class="space-y-4">
               <!-- Session name -->
               <div>
                 <label
-                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-widest"
                   >{{ 'landing.sessionName' | translate }}</label
                 >
                 <input
@@ -66,14 +75,14 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                   [placeholder]="'landing.sessionNamePlaceholder' | translate"
                   maxlength="50"
                   required
-                  class="w-full bg-casino-surface border border-casino-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/30 transition-colors text-sm"
+                  class="input-casino"
                 />
               </div>
 
               <!-- Voting system -->
               <div>
                 <label
-                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-widest"
                   >{{ 'landing.votingSystem' | translate }}</label
                 >
                 <div class="grid grid-cols-2 gap-2">
@@ -81,18 +90,19 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                     <button
                       type="button"
                       (click)="votingSystem.set(system)"
-                      class="p-2.5 rounded-lg border text-sm transition-all text-left"
-                      [class.border-gold]="votingSystem() === system"
-                      [class.bg-gold/10]="votingSystem() === system"
+                      class="p-2.5 rounded-xl border text-sm transition-all text-left group"
+                      [class.border-gold/40]="votingSystem() === system"
+                      [class.bg-gold/8]="votingSystem() === system"
                       [class.text-gold]="votingSystem() === system"
                       [class.border-casino-border]="votingSystem() !== system"
                       [class.text-gray-400]="votingSystem() !== system"
-                      [class.hover:border-gold/40]="votingSystem() !== system"
+                      [class.hover:border-gold/25]="votingSystem() !== system"
+                      [class.hover:text-gray-300]="votingSystem() !== system"
                     >
-                      <div class="font-medium">
+                      <div class="font-medium text-[13px]">
                         {{ 'voting.systems.' + system + '.label' | translate }}
                       </div>
-                      <div class="text-xs opacity-60 truncate">
+                      <div class="text-xs opacity-50 truncate mt-0.5">
                         {{ 'voting.systems.' + system + '.preview' | translate }}
                       </div>
                     </button>
@@ -102,9 +112,9 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
 
               <!-- Custom values -->
               @if (votingSystem() === 'custom') {
-                <div>
+                <div class="animate-fade-in">
                   <label
-                    class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                    class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-widest"
                     >{{ 'landing.customValues' | translate }}</label
                   >
                   <input
@@ -113,9 +123,9 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                     (ngModelChange)="customOptions.set($event)"
                     name="customOptions"
                     [placeholder]="'landing.customValuesPlaceholder' | translate"
-                    class="w-full bg-casino-surface border border-casino-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/60 transition-colors text-sm"
+                    class="input-casino"
                   />
-                  <p class="text-gray-600 text-xs mt-1">
+                  <p class="text-gray-600 text-xs mt-1.5">
                     {{ 'landing.customValuesHint' | translate }}
                   </p>
                 </div>
@@ -124,31 +134,33 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
               <!-- Reveal policy -->
               <div>
                 <label
-                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-widest"
                   >{{ 'landing.revealPolicy' | translate }}</label
                 >
                 <div class="flex gap-2">
                   <button
                     type="button"
                     (click)="revealPolicy.set('host_only')"
-                    class="flex-1 py-2 px-3 rounded-lg border text-sm transition-all"
-                    [class.border-gold]="revealPolicy() === 'host_only'"
-                    [class.bg-gold/10]="revealPolicy() === 'host_only'"
+                    class="flex-1 py-2.5 px-3 rounded-xl border text-sm transition-all font-medium"
+                    [class.border-gold/40]="revealPolicy() === 'host_only'"
+                    [class.bg-gold/8]="revealPolicy() === 'host_only'"
                     [class.text-gold]="revealPolicy() === 'host_only'"
                     [class.border-casino-border]="revealPolicy() !== 'host_only'"
                     [class.text-gray-400]="revealPolicy() !== 'host_only'"
+                    [class.hover:border-gold/25]="revealPolicy() !== 'host_only'"
                   >
                     {{ 'landing.hostOnly' | translate }}
                   </button>
                   <button
                     type="button"
                     (click)="revealPolicy.set('anyone')"
-                    class="flex-1 py-2 px-3 rounded-lg border text-sm transition-all"
-                    [class.border-gold]="revealPolicy() === 'anyone'"
-                    [class.bg-gold/10]="revealPolicy() === 'anyone'"
+                    class="flex-1 py-2.5 px-3 rounded-xl border text-sm transition-all font-medium"
+                    [class.border-gold/40]="revealPolicy() === 'anyone'"
+                    [class.bg-gold/8]="revealPolicy() === 'anyone'"
                     [class.text-gold]="revealPolicy() === 'anyone'"
                     [class.border-casino-border]="revealPolicy() !== 'anyone'"
                     [class.text-gray-400]="revealPolicy() !== 'anyone'"
+                    [class.hover:border-gold/25]="revealPolicy() !== 'anyone'"
                   >
                     {{ 'landing.anyone' | translate }}
                   </button>
@@ -156,13 +168,13 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
               </div>
 
               @if (createError()) {
-                <p class="text-red-400 text-sm">{{ createError()! | translate }}</p>
+                <p class="text-red-400 text-sm animate-fade-in">{{ createError()! | translate }}</p>
               }
 
               <button
                 type="submit"
                 [disabled]="creating()"
-                class="btn-gold w-full py-3 rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                class="btn-gold w-full py-3 rounded-xl text-sm"
               >
                 {{ (creating() ? 'landing.creating' : 'landing.dealTheCards') | translate }}
               </button>
@@ -170,15 +182,21 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
           </div>
 
           <!-- Join session card -->
-          <div class="bg-casino-card border border-casino-surface rounded-2xl p-6">
-            <h2 class="text-white font-bold text-xl mb-5 flex items-center gap-2">
-              <span>→</span> {{ 'landing.joinSession' | translate }}
+          <div
+            class="glass-panel p-6 animate-fade-in-up"
+            style="animation-delay: 0.12s"
+          >
+            <h2
+              class="text-white font-bold text-lg mb-5 flex items-center gap-2.5"
+            >
+              <span class="chip-dot"></span>
+              {{ 'landing.joinSession' | translate }}
             </h2>
 
             <form (ngSubmit)="joinSession()" class="space-y-4">
               <div>
                 <label
-                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-widest"
                   >{{ 'landing.sessionCode' | translate }}</label
                 >
                 <input
@@ -189,18 +207,18 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
                   placeholder="ABC123"
                   maxlength="6"
                   autocomplete="off"
-                  class="w-full bg-casino-surface border border-casino-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/30 transition-colors text-sm font-mono tracking-widest text-center text-lg"
+                  class="input-casino font-mono tracking-[0.3em] text-center text-lg"
                 />
               </div>
 
               @if (joinError()) {
-                <p class="text-red-400 text-sm">{{ joinError()! | translate }}</p>
+                <p class="text-red-400 text-sm animate-fade-in">{{ joinError()! | translate }}</p>
               }
 
               <button
                 type="submit"
                 [disabled]="joinCode().length < 6"
-                class="btn-gold w-full py-3 rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                class="btn-gold w-full py-3 rounded-xl text-sm"
               >
                 {{ 'landing.joinTable' | translate }}
               </button>
@@ -208,13 +226,20 @@ import { LanguageSwitcherComponent } from '../../components/shared/language-swit
 
             <!-- How it works -->
             <div class="mt-8 space-y-3">
-              <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <h3
+                class="text-[11px] font-semibold text-gray-600 uppercase tracking-widest"
+              >
                 {{ 'landing.howItWorks' | translate }}
               </h3>
               @for (step of howItWorks; track step) {
                 <div class="flex items-start gap-3">
-                  <span class="text-gold font-bold text-sm flex-shrink-0">{{ step }}.</span>
-                  <p class="text-gray-500 text-sm">{{ 'landing.step' + step | translate }}</p>
+                  <span
+                    class="text-gold/70 font-bold text-xs w-5 h-5 flex items-center justify-center rounded-full border border-gold/20 flex-shrink-0 mt-0.5"
+                    >{{ step }}</span
+                  >
+                  <p class="text-gray-500 text-sm leading-relaxed">
+                    {{ 'landing.step' + step | translate }}
+                  </p>
                 </div>
               }
             </div>

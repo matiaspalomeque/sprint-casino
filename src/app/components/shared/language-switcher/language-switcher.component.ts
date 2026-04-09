@@ -6,25 +6,27 @@ import { I18nService, Locale } from '../../../services/i18n.service';
   standalone: true,
   template: `
     <div
-      class="flex items-center gap-0.5 bg-casino-card border border-casino-surface rounded-lg p-1 text-xs font-semibold"
+      class="flex items-center gap-0.5 glass-panel-sm p-0.5 text-[11px] font-bold tracking-wide"
     >
       <button
         (click)="setLocale('en')"
-        class="px-2 py-1 rounded transition-colors"
+        class="px-2.5 py-1 rounded-md transition-all duration-200"
         [class.bg-gold]="i18n.locale() === 'en'"
-        [class.text-black]="i18n.locale() === 'en'"
-        [class.text-gray-400]="i18n.locale() !== 'en'"
-        [class.hover:text-white]="i18n.locale() !== 'en'"
+        [class.text-casino-dark]="i18n.locale() === 'en'"
+        [class.shadow-sm]="i18n.locale() === 'en'"
+        [class.text-gray-500]="i18n.locale() !== 'en'"
+        [class.hover:text-gray-300]="i18n.locale() !== 'en'"
       >
         EN
       </button>
       <button
         (click)="setLocale('es-AR')"
-        class="px-2 py-1 rounded transition-colors"
+        class="px-2.5 py-1 rounded-md transition-all duration-200"
         [class.bg-gold]="i18n.locale() === 'es-AR'"
-        [class.text-black]="i18n.locale() === 'es-AR'"
-        [class.text-gray-400]="i18n.locale() !== 'es-AR'"
-        [class.hover:text-white]="i18n.locale() !== 'es-AR'"
+        [class.text-casino-dark]="i18n.locale() === 'es-AR'"
+        [class.shadow-sm]="i18n.locale() === 'es-AR'"
+        [class.text-gray-500]="i18n.locale() !== 'es-AR'"
+        [class.hover:text-gray-300]="i18n.locale() !== 'es-AR'"
       >
         ES
       </button>

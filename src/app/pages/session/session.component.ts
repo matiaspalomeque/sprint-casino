@@ -30,12 +30,13 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
     <!-- Connection states -->
     @if (sessionService.connectionStatus() === 'connecting') {
-      <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
+      <div class="min-h-screen flex items-center justify-center relative">
+        <div class="ambient-bg"></div>
+        <div class="text-center relative z-10 animate-fade-in">
           <div
-            class="w-12 h-12 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4"
+            class="w-14 h-14 border-2 border-gold/20 border-t-gold rounded-full animate-spin mx-auto mb-5"
           ></div>
-          <p class="text-gray-400">
+          <p class="text-gray-500 text-sm">
             {{ (sessionService.isHost() ? 'session.settingUp' : 'session.joining') | translate }}
           </p>
         </div>
@@ -44,23 +45,27 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
     @if (sessionService.connectionStatus() === 'reconnecting') {
       <div
-        class="fixed top-0 left-0 right-0 z-50 bg-gold/90 text-black text-center py-2 text-sm font-medium"
+        class="fixed top-0 left-0 right-0 z-50 bg-gold text-casino-dark text-center py-2.5 text-xs font-bold tracking-wide animate-fade-in"
       >
         {{ 'session.reconnecting' | translate }}
       </div>
     }
 
     @if (sessionService.connectionStatus() === 'error') {
-      <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center max-w-sm mx-auto px-4">
-          <h2 class="text-white font-bold text-xl mb-2">
+      <div class="min-h-screen flex items-center justify-center relative">
+        <div class="ambient-bg"></div>
+        <div class="text-center max-w-sm mx-auto px-4 relative z-10 animate-fade-in-up">
+          <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-red-500/10 flex items-center justify-center">
+            <span class="text-red-400 text-2xl">✕</span>
+          </div>
+          <h2 class="text-white font-bold text-xl mb-2 tracking-tight">
             {{ 'session.connectionFailed' | translate }}
           </h2>
           @let errorKey = sessionService.errorMessage() ?? 'session.couldNotConnect';
-          <p class="text-gray-400 text-sm mb-6">
+          <p class="text-gray-500 text-sm mb-7">
             {{ errorKey | translate }}
           </p>
-          <button (click)="goHome()" class="btn-gold px-6 py-2.5 rounded-xl text-sm">
+          <button (click)="goHome()" class="btn-gold px-8 py-2.5 rounded-xl text-sm">
             {{ 'session.backToLobby' | translate }}
           </button>
         </div>
@@ -68,13 +73,17 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     }
 
     @if (sessionService.connectionStatus() === 'ended') {
-      <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center max-w-sm mx-auto px-4">
-          <h2 class="text-white font-bold text-xl mb-2">
+      <div class="min-h-screen flex items-center justify-center relative">
+        <div class="ambient-bg"></div>
+        <div class="text-center max-w-sm mx-auto px-4 relative z-10 animate-fade-in-up">
+          <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-gold/10 flex items-center justify-center">
+            <span class="text-gold text-2xl">♠</span>
+          </div>
+          <h2 class="text-white font-bold text-xl mb-2 tracking-tight">
             {{ 'session.sessionEnded' | translate }}
           </h2>
-          <p class="text-gray-400 text-sm mb-6">{{ 'session.hostLeft' | translate }}</p>
-          <button (click)="goHome()" class="btn-gold px-6 py-2.5 rounded-xl text-sm">
+          <p class="text-gray-500 text-sm mb-7">{{ 'session.hostLeft' | translate }}</p>
+          <button (click)="goHome()" class="btn-gold px-8 py-2.5 rounded-xl text-sm">
             {{ 'session.backToLobby' | translate }}
           </button>
         </div>
@@ -85,7 +94,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     @if (sessionService.connectionStatus() === 'connected' && sessionService.session()) {
       @let session = sessionService.session()!;
 
-      <div class="flex flex-col min-h-screen">
+      <div class="flex flex-col min-h-screen bg-casino-dark">
         <!-- Header -->
         <app-session-header
           [sessionId]="session.sessionId"
@@ -115,7 +124,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             <!-- Mobile story selector -->
             <div class="md:hidden">
               <select
-                class="w-full bg-casino-surface border border-casino-border rounded-lg px-3 py-2 text-sm text-white"
+                class="w-full input-casino text-sm"
                 [value]="session.activeStoryId ?? ''"
                 (change)="onMobileStoryChange($event)"
               >
@@ -163,7 +172,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         <!-- Toast -->
         @if (sessionService.toastMessage()) {
           <div
-            class="fixed bottom-4 right-4 bg-casino-surface border border-casino-border rounded-xl px-4 py-3 text-sm text-white shadow-xl animate-[fade-in_0.3s_ease-out]"
+            class="fixed bottom-5 right-5 glass-panel px-5 py-3 text-sm text-white shadow-2xl animate-fade-in-up"
           >
             {{ sessionService.toastMessage() }}
           </div>

@@ -76,9 +76,9 @@ describe('ParticipantsPanelComponent', () => {
   });
 
   describe('getAvatarColor()', () => {
-    it('returns a hex color string', () => {
+    it('returns a CSS gradient string', () => {
       const color = component.getAvatarColor('Alice');
-      expect(color).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(color).toMatch(/^linear-gradient\(/);
     });
 
     it('returns consistent color for the same name', () => {

@@ -10,20 +10,31 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
   imports: [FormsModule, TranslatePipe, LanguageSwitcherComponent],
   template: `
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-3xl px-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-casino-deep/90 backdrop-blur-2xl px-4"
     >
-      <div class="flex items-center gap-8">
-        <img src="sprint-casino.png" alt="Sprint Casino" class="w-[512px] hidden md:block" />
+      <div class="ambient-bg"></div>
+
+      <div class="flex items-center gap-10 relative z-10">
+        <img
+          src="sprint-casino.png"
+          alt="Sprint Casino"
+          class="w-[420px] hidden md:block drop-shadow-2xl"
+        />
 
         <div
-          class="bg-casino-card border border-gold/40 rounded-2xl p-8 w-full max-w-sm shadow-2xl"
+          class="glass-panel border-gold/15 p-8 w-full max-w-sm shadow-2xl animate-fade-in-up"
         >
-          <div class="flex justify-end mb-4">
+          <div class="flex justify-end mb-5">
             <app-language-switcher />
           </div>
-          <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-white mb-1">{{ 'namePrompt.title' | translate }}</h2>
-            <p class="text-gray-400 text-sm">{{ 'namePrompt.subtitle' | translate }}</p>
+
+          <div class="text-center mb-7">
+            <h2 class="text-2xl font-bold text-white mb-1.5 tracking-tight">
+              {{ 'namePrompt.title' | translate }}
+            </h2>
+            <p class="text-gray-500 text-sm">
+              {{ 'namePrompt.subtitle' | translate }}
+            </p>
           </div>
 
           <form (ngSubmit)="submit()" class="space-y-4">
@@ -35,16 +46,18 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
               maxlength="20"
               autocomplete="off"
               autofocus
-              class="w-full bg-casino-surface border border-casino-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
+              class="input-casino text-center"
             />
 
             @if (error) {
-              <p class="text-red-400 text-sm">{{ error | translate }}</p>
+              <p class="text-red-400 text-sm text-center animate-fade-in">
+                {{ error | translate }}
+              </p>
             }
 
             <button
               type="submit"
-              class="btn-gold w-full py-3 px-6 rounded-lg text-sm font-semibold"
+              class="btn-gold w-full py-3 px-6 rounded-xl text-sm"
             >
               {{ 'namePrompt.submit' | translate }}
             </button>
